@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ndk_sample.databinding.ActivityMainBinding;
 import com.example.ndk_sample.jni.GetLineActivity;
+import com.example.ndk_sample.jni.JNICallBackFieldActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
-    private String[] items = {"Get Line"};
+    private String[] items = {"Get Line", "JNICallBackField"};
 
     private ActivityMainBinding binding;
 
@@ -44,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
             Class<?> destinationActivity = null;
             if (items[0].equals(selectedItem)) {
                 destinationActivity = GetLineActivity.class;
+            } else if (items[1].equals(selectedItem)) {
+                destinationActivity = JNICallBackFieldActivity.class;
+            } else {
+                return;
             }
 
             Intent it = new Intent(MainActivity.this, destinationActivity);

@@ -70,3 +70,28 @@ Java_com_example_ndk_1sample_jni_GetLineActivity_getLine(
     const char *buf = "Hello JNI";
     return env -> NewStringUTF(buf); // Java에서 사용하는 UTF-16으로 변환하여 반환합니다.
 }
+
+extern "C" JNIEXPORT jstring JNICALL
+Java_com_example_ndk_1sample_jni_JNICallBackMethod_PrinttoString(JNIEnv *env, jobject obj) {
+    // obj 인스턴스를 사용하여 JNICallBackMethod를 얻음
+    jclass cls = env->GetObjectClass(obj);
+
+    // toString() 메소드의 ID를 얻음
+    jmethodID mid = env->GetMethodID(cls, "toString", "()Ljava/lang/String;");
+
+    // 메소드 ID를 사용하여 함수 호출 및 Java 문자열 반환
+//    jstring s = (jstring) env->CallNonvirtualObjectMethod(obj, cls, mid);
+    jstring s = (jstring) env->CallObjectMethod(obj, mid);
+
+    // C 언어 타입의 문자로 변경하기 위해 NULL 추가
+    const char *buf = env->GetStringUTFChars(s, 0);
+
+    // buf의 내용을 LogCat 화면에 출력
+    __android_log_print(ANDROID_LOG_INFO, "JNICallBackMethod_PrinttoString", "%s", buf);
+
+    // 사용한 버퍼 삭제
+    env->ReleaseStringUTFChars(s, buf);
+
+    // toString() 함수로부터 반환받은 문자열 반환
+    return s;
+}

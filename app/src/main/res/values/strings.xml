@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">ndk_sample</string>
     <string name="get_line">get Line</string>
+    <string name="sum">sum</string>
+    <string name="result">result</string>
+    <string name="x">x</string>
+    <string name="plus">+</string>
+    <string name="y">y</string>
 </resources>

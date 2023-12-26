@@ -27,6 +27,10 @@
             android:name=".jni.GetLineActivity">
         </activity>
 
+        <activity
+            android:name=".jni.JNICallBackFieldActivity">
+        </activity>
+
     </application>
 
 </manifest>

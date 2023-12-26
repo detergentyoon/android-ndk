@@ -1,11 +1,15 @@
 package com.example.ndk_sample;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.ndk_sample.databinding.ActivityMainBinding;
+import com.example.ndk_sample.jni.GetLineActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     static {
         System.loadLibrary("native-lib");
     }
+
+    private String[] items = {"Get Line"};
 
     private ActivityMainBinding binding;
 
@@ -23,9 +29,29 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        TextView title = binding.sampleText;
+        ListView listView = binding.listView;
+
         // 네이티브 메소드 호출
-        TextView tv = binding.sampleText;
-        tv.setText(stringFromJNI());
+        title.setText(stringFromJNI());
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedItem = (String) parent.getItemAtPosition(position);
+
+            Class<?> destinationActivity = null;
+            if (items[0].equals(selectedItem)) {
+                destinationActivity = GetLineActivity.class;
+            }
+
+            Intent it = new Intent(MainActivity.this, destinationActivity);
+
+            it.putExtra("selectedItem", selectedItem);
+
+            startActivity(it);
+        });
     }
 
     /**

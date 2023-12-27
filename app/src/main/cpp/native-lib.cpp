@@ -95,3 +95,75 @@ Java_com_example_ndk_1sample_jni_JNICallBackMethod_PrinttoString(JNIEnv *env, jo
     // toString() 함수로부터 반환받은 문자열 반환
     return s;
 }
+
+// Java 문자열을 logCat에 출력하는 함수
+static void printStringLogcat(JNIEnv *env, jstring jstr) {
+    // Java 문자열을 C 언어 형식(utf-8)로 변환
+    const char * str = env->GetStringUTFChars(jstr, 0);
+
+    __android_log_print(ANDROID_LOG_INFO, "JNICallBackField_fieldAccess",
+                        "stringField = %s\n, str");
+
+    // GetStringUTFChars를 사용할 때 할당된 메모리 공간을 해제
+    env->ReleaseStringUTFChars(jstr, str);
+}
+
+
+extern "C" JNIEXPORT void JNICALL
+/**
+ * Java Class 필드에 접근하여
+ * 입력된 String 필드 값과 "Hello " 문자열을 병합시키고,
+ * 입력된 static int 필드 값에 +10 처리를 수행하는 네이티브 함수
+ */
+Java_com_example_ndk_1sample_jni_JNICallBackField_fieldAccess(JNIEnv *env, jobject obj) {
+    // 인스턴스로부터 클래스 획득
+    jclass cls = env->GetObjectClass(obj);
+
+    // intField 정적 필드 아이디 획득
+    jfieldID intFieldId = env->GetStaticFieldID(cls, "intField", "I");
+    if (!intFieldId) {
+        __android_log_print(ANDROID_LOG_INFO, "JNICallBackField_fieldAccess",
+                            "Error getting fid for intField]\n");
+        return;
+    }
+
+    // 필드 아이디를 통해 static 필드 내에 할당된 데이터(number 입력 값)를 읽음
+    jint existingInt = env->GetStaticIntField(cls, intFieldId);
+
+    __android_log_print(ANDROID_LOG_INFO, "JNICallBackField_fieldAccess",
+                        "intField = %d\n", existingInt);
+
+    // static int 필드 값에 +10 처리
+    env->SetStaticIntField(cls, intFieldId, existingInt + 10);
+
+
+    // Java 클래스 내의 stringField 아이디 획득
+    jfieldID strFieldId = env->GetFieldID(cls, "stringField", "Ljava/lang/String;");
+    if (!strFieldId) {
+        __android_log_print(ANDROID_LOG_INFO, "JNICallBackField_fieldAccess",
+                            "Error getting fid for stringField\n");
+        return;
+    }
+
+    // 필드 아이디를 통해 String 필드 내에 할당된 데이터(text 입력 값)를 읽음
+    jstring existingStr = (jstring) env->GetObjectField(obj, strFieldId);
+
+    // Logcat에 Java 문자열 출력
+    printStringLogcat(env, existingStr);
+
+    // utf-8 타입으로 변수에 입력할 새로운 문자 생성
+    const char *appendStr = "Hello ";
+
+    // 새로운 문자열과 기존 문자열을 병합하여 새로운 Java 문자열 생성
+    const char *existingStrChars = env->GetStringUTFChars(existingStr, 0);
+    std::string mergedStr = std::string(appendStr) + existingStrChars;
+    env->ReleaseStringUTFChars(existingStr, existingStrChars);
+
+    jstring jstr = env->NewStringUTF(mergedStr.c_str());
+
+    // Logcat에 Java 문자열 출력
+    printStringLogcat(env, jstr);
+
+    // 새로운 Java 문자열을 stringField에 할당
+    env->SetObjectField(obj, strFieldId, jstr);
+}

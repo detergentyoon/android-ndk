@@ -6,4 +6,11 @@
     <string name="x">x</string>
     <string name="plus">+</string>
     <string name="y">y</string>
+    <string name="log">log</string>
+    <string name="text">text</string>
+    <string name="comma">,</string>
+    <string name="number">number</string>
+    <string name="notice0">\"Access Java class field from C++\"\n\nProcessing at C++\n - Set String field value to new string \"Hello \"\n - int field value +10</string>
+    <string name="access">Access</string>
+    <string name="please_fill_in_the_input_field">Please fill in the input field</string>
 </resources>

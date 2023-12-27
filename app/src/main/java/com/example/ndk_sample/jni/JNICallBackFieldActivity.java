@@ -1,65 +1,61 @@
 package com.example.ndk_sample.jni;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.ndk_sample.databinding.ActivityJniCallbackMethodBinding;
+import com.example.ndk_sample.R;
+import com.example.ndk_sample.databinding.ActivityJniCallbackFieldBinding;
 
 public class JNICallBackFieldActivity extends AppCompatActivity {
-    public int i = 0, j = 0;
+    public String name;
+    public int age;
+    
+    private ActivityJniCallbackFieldBinding binding;
 
-    private static final String TAG = "JNICallBackFieldActivity";
-    private ActivityJniCallbackMethodBinding binding;
+    EditText etI;
+    EditText etStr;
 
-    EditText ei;
-    EditText ej;
-
-    TextView tv;
+    TextView tvResult;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityJniCallbackMethodBinding.inflate(getLayoutInflater());
+        binding = ActivityJniCallbackFieldBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+        
+        etStr = binding.etName;
+        etI = binding.etAge;
 
-        ei = binding.i;
-        ej = binding.j;
+        tvResult = binding.tvResult;
 
-        tv = binding.result;
-
-        Button btn = binding.sum;
+        Button btn = binding.btnSum;
         btn.setOnClickListener(saveListener);
     }
 
     private final View.OnClickListener saveListener = view -> {
         try {
-            i = Integer.parseInt(ei.getText().toString());
+            name = etStr.getText().toString();
+            age = Integer.parseInt(etI.getText().toString());
+
+            // name이 빈 값으로 들어오지 않았고,
+            // NumberFormatException이 발생하지 않은 경우에만 수행
+            if (!name.equals("")) {
+                JNICallBackField f = new JNICallBackField(name, age);
+                f.doFieldAccess(tvResult);  // 네이티브 함수 fieldAccess() 호출
+            } else {
+                Toast.makeText(this, R.string.please_fill_in_the_input_field, Toast.LENGTH_SHORT).show();
+            }
         } catch (NumberFormatException e) {
-            i = 0; // 숫자가 아닌 문자가 포함되어 있는 경우
+            Toast.makeText(this, R.string.please_fill_in_the_input_field, Toast.LENGTH_SHORT).show();
         }
-
-        try {
-            j = Integer.parseInt(ej.getText().toString());
-        } catch (NumberFormatException e) {
-            j = 0;
-        }
-
-        // JNICallBackMethod 클래스의 인스턴스 생성
-        JNICallBackMethod m = new JNICallBackMethod(i, j);
-
-        // 네이티브 함수 호출
-        String s = "return method " + m.PrinttoString();
-
-        Log.v(TAG, s);
-        tv.setText(s);
     };
 }

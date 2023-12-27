@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.ndk_sample.databinding.ActivityMainBinding;
 import com.example.ndk_sample.jni.GetLineActivity;
 import com.example.ndk_sample.jni.JNICallBackFieldActivity;
+import com.example.ndk_sample.jni.JNICallBackMethodActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
-    private String[] items = {"Get Line", "JNICallBackField"};
+    private final String[] items = {"GetLine", "JNICallBackMethod", "JNICallBackField"};
 
     private ActivityMainBinding binding;
 
@@ -42,10 +43,12 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             String selectedItem = (String) parent.getItemAtPosition(position);
 
-            Class<?> destinationActivity = null;
+            Class<?> destinationActivity;
             if (items[0].equals(selectedItem)) {
                 destinationActivity = GetLineActivity.class;
             } else if (items[1].equals(selectedItem)) {
+                destinationActivity = JNICallBackMethodActivity.class;
+            } else if (items[2].equals(selectedItem)) {
                 destinationActivity = JNICallBackFieldActivity.class;
             } else {
                 return;

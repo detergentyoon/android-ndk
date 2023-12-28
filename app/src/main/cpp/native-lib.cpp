@@ -6,6 +6,7 @@ extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_ndk_1sample_MainActivity_stringFromJNI(
         JNIEnv* env,
         jobject /* this */) {
+
     std::string hello = "Hello from C++";
     return env -> NewStringUTF(hello.c_str());
 }
@@ -72,7 +73,9 @@ Java_com_example_ndk_1sample_jni_GetLineActivity_getLine(
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_ndk_1sample_jni_JNICallBackMethod_PrinttoString(JNIEnv *env, jobject obj) {
+Java_com_example_ndk_1sample_jni_JNICallBackMethod_PrinttoString(
+        JNIEnv *env, jobject obj) {
+
     // obj 인스턴스를 사용하여 JNICallBackMethod를 얻음
     jclass cls = env->GetObjectClass(obj);
 
@@ -97,17 +100,18 @@ Java_com_example_ndk_1sample_jni_JNICallBackMethod_PrinttoString(JNIEnv *env, jo
 }
 
 // Java 문자열을 logCat에 출력하는 함수
-static void printStringLogcat(JNIEnv *env, jstring jstr) {
+static void printStringLogcatField(
+        JNIEnv *env, jstring jstr) {
+
     // Java 문자열을 C 언어 형식(utf-8)로 변환
     const char * str = env->GetStringUTFChars(jstr, 0);
 
     __android_log_print(ANDROID_LOG_INFO, "JNICallBackField_fieldAccess",
-                        "stringField = %s\n, str");
+                        "stringField = %s\n", str);
 
     // GetStringUTFChars를 사용할 때 할당된 메모리 공간을 해제
     env->ReleaseStringUTFChars(jstr, str);
 }
-
 
 extern "C" JNIEXPORT void JNICALL
 /**
@@ -115,7 +119,9 @@ extern "C" JNIEXPORT void JNICALL
  * 입력된 String 필드 값과 "Hello " 문자열을 병합시키고,
  * 입력된 static int 필드 값에 +10 처리를 수행하는 네이티브 함수
  */
-Java_com_example_ndk_1sample_jni_JNICallBackField_fieldAccess(JNIEnv *env, jobject obj) {
+Java_com_example_ndk_1sample_jni_JNICallBackField_fieldAccess(
+        JNIEnv *env, jobject obj) {
+
     // 인스턴스로부터 클래스 획득
     jclass cls = env->GetObjectClass(obj);
 
@@ -123,7 +129,7 @@ Java_com_example_ndk_1sample_jni_JNICallBackField_fieldAccess(JNIEnv *env, jobje
     jfieldID intFieldId = env->GetStaticFieldID(cls, "intField", "I");
     if (!intFieldId) {
         __android_log_print(ANDROID_LOG_INFO, "JNICallBackField_fieldAccess",
-                            "Error getting fid for intField]\n");
+                            "Error getting fid for intField\n");
         return;
     }
 
@@ -149,7 +155,7 @@ Java_com_example_ndk_1sample_jni_JNICallBackField_fieldAccess(JNIEnv *env, jobje
     jstring existingStr = (jstring) env->GetObjectField(obj, strFieldId);
 
     // Logcat에 Java 문자열 출력
-    printStringLogcat(env, existingStr);
+    printStringLogcatField(env, existingStr);
 
     // utf-8 타입으로 변수에 입력할 새로운 문자 생성
     const char *appendStr = "Hello ";
@@ -162,8 +168,87 @@ Java_com_example_ndk_1sample_jni_JNICallBackField_fieldAccess(JNIEnv *env, jobje
     jstring jstr = env->NewStringUTF(mergedStr.c_str());
 
     // Logcat에 Java 문자열 출력
-    printStringLogcat(env, jstr);
+    printStringLogcatField(env, jstr);
 
     // 새로운 Java 문자열을 stringField에 할당
     env->SetObjectField(obj, strFieldId, jstr);
+}
+
+
+static void printStringLogcatArray(
+        JNIEnv *env, jstring jstr) {
+
+    // Java 문자열을 C 언어 형식(utf-8)로 변환
+    const char * str = env->GetStringUTFChars(jstr, 0);
+
+    __android_log_print(ANDROID_LOG_INFO, "JNICallBackArray","%s\n", str);
+
+    // GetStringUTFChars를 사용할 때 할당된 메모리 공간을 해제
+    env->ReleaseStringUTFChars(jstr, str);
+}
+
+/**
+ * Java에서 전달받은 String[]의 원소들을 개별 문자열로
+ * Logcat에 출력하고, 배열의 크기를 반환하는 함수
+ */
+extern "C" JNIEXPORT jint JNICALL
+Java_com_example_ndk_1sample_jni_JNICallBackArray_stringArrayAccess(
+        JNIEnv *env, jobject obj, jobjectArray as) {
+
+    int i;
+    jsize len = env->GetArrayLength(as); // 배열 크기 반환
+
+    for (i = 0; i < len; ++i) {
+        // 배열로부터 각 요소마다 개별 문자열 생성
+        jstring jstr = (jstring) env->GetObjectArrayElement(as, i);
+        printStringLogcatArray(env, jstr);  // Logcat에 출력
+        env->DeleteLocalRef(jstr);  // 사용한 문자열의 메모리 회수
+    }
+
+    return len;
+}
+
+extern "C" JNIEXPORT jintArray JNICALL
+/**
+ * Java에서 전달받은 int[]의 각 원소에 대해 *10 연산하고
+ * 값이 업데이트된 배열을 반환하는 함수
+ */
+Java_com_example_ndk_1sample_jni_JNICallBackArray_intArrayAccess(
+        JNIEnv *env, jobject obj, jintArray ai) {
+
+    int i, sum = 0;
+    jsize len = env->GetArrayLength(ai);  // 배열 크기 반환
+
+    // 전달받은 Java int[] 배열을 네이티브 int 배열로 변환
+    jint *body = env->GetIntArrayElements(ai, 0);
+
+    // 각 네이티브 배열 요소를 순회하며 값 합산
+    for (i = 0; i < len; ++i) {
+        sum += body[i];
+    }
+    // 합산 결과를 Logcat에 출력
+    __android_log_print(ANDROID_LOG_INFO, "JNICallBackArray", "sum = %d\n", sum);
+
+    jintArray ret = env->NewIntArray(len); // 새로운 Java int[] 배열 생성
+
+    // Java int[] 배열을 네이티브 int 배열로 변환
+    jint *retarray = env->GetIntArrayElements(ret, 0);
+
+    // 각 네이티브 배열 요소를 순회하며 값 * 10 곱연산
+    for (i = 0; i < len; ++i) {
+        retarray[i] = body[i] * 10;
+    }
+
+    // 작업한 네이티브 배열을 Java 배열로 변환하고 메모리 삭제
+    env->ReleaseIntArrayElements(ai, body, JNI_ABORT);
+    env->ReleaseIntArrayElements(ret, retarray, 0);
+    /**
+     * @param 0             elems 버퍼의 내용(업데이트 내용)을 원본 배열에 반영하고 메모리는 회수함
+     * @param JNI_COMMIT    elems 버퍼의 내용(업데이트 내용)을 원본 배열에 반영하지만 메모리는 회수하지 않음
+     * @param JNI_ABORT     elems 버퍼의 메모리를 회수하지만 elems 버퍼의 내용은 다시 복사되지 않고 버퍼와 함께 삭제됨
+     *                          -> 원본 배열에 업데이트 내용을 반영하지 않고 메모리는 회수함
+     *                             (복사본으로 작업하고 배열 수정은 없는 경우 유용)
+     */
+
+    return ret;
 }

@@ -35,6 +35,10 @@
             android:name=".jni.JNICallBackFieldActivity">
         </activity>
 
+        <activity
+            android:name=".jni.JNICallBackArrayActivity">
+        </activity>
+
     </application>
 
 </manifest>

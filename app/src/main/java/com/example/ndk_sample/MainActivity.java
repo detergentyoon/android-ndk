@@ -10,17 +10,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ndk_sample.databinding.ActivityMainBinding;
 import com.example.ndk_sample.jni.GetLineActivity;
+import com.example.ndk_sample.jni.JNICallBackArrayActivity;
 import com.example.ndk_sample.jni.JNICallBackFieldActivity;
 import com.example.ndk_sample.jni.JNICallBackMethodActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    // 응용 프로그램 시작 시 'native-lib' 라이브러리를 로드하는 데 사용됩니다.
+    // 응용 프로그램 시작 시 'native-lib' 라이브러리를 로드하는 데 사용
     static {
         System.loadLibrary("native-lib");
     }
 
-    private final String[] items = {"GetLine", "JNICallBackMethod", "JNICallBackField"};
+    private final String[] items = {"GetLine", "JNICallBackMethod", "JNICallBackField", "JNICallBackArray"};
 
     private ActivityMainBinding binding;
 
@@ -50,21 +51,21 @@ public class MainActivity extends AppCompatActivity {
                 destinationActivity = JNICallBackMethodActivity.class;
             } else if (items[2].equals(selectedItem)) {
                 destinationActivity = JNICallBackFieldActivity.class;
+            } else if (items[3].equals(selectedItem)) {
+                destinationActivity = JNICallBackArrayActivity.class;
             } else {
                 return;
             }
 
             Intent it = new Intent(MainActivity.this, destinationActivity);
-
             it.putExtra("selectedItem", selectedItem);
-
             startActivity(it);
         });
     }
 
     /**
-     * 'native-lib'이라는 이름을 가진 네이티브 라이브러리에 의해 구현되는 네이티브 메서드이며,
-     * 이 라이브러리는 이 애플리케이션과 함께 패키지화되어 있습니다.
+     * 'native-lib'이라는 이름을 가진 네이티브 라이브러리에 의해 구현되는 네이티브 메서드로,
+     * 이 라이브러리는 이 애플리케이션과 함께 패키지화되어 있음
      */
     public native String stringFromJNI();
 }

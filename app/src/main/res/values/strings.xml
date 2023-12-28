@@ -13,4 +13,8 @@
     <string name="notice0">\"Access Java class field from C++\"\n\nProcessing at C++\n - Set String field value to new string \"Hello \"\n - int field value +10</string>
     <string name="access">Access</string>
     <string name="please_fill_in_the_input_field">Please fill in the input field</string>
+    <string name="result_0">result 0</string>
+    <string name="result_1">result 1</string>
+    <string name="result_2">result 2</string>
+    <string name="result_3">result 3</string>
 </resources>

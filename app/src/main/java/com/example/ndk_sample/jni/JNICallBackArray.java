@@ -20,6 +20,8 @@ public class JNICallBackArray {
         String s[] = new String[10];
         int   ai[] = new int[10];
 
+        result0.setText("");
+
         for (i = 0; i < 10; ++i) {  // 각 배열에 값 입력
             String fResult0 = "String: " + Integer.toString(i);
 

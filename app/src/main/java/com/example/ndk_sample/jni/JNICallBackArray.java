@@ -11,6 +11,9 @@ public class JNICallBackArray {
     private native int [] intArrayAccess(int [] ai);
     private native int stringArrayAccess(String [] s);
 
+    public native Integer getInteger(int number);
+    public native Integer getIntegerRef(int number);
+
     private static final String TAG = "JNICallBackArray";
 
     public void doArray(TextView result0, TextView result1,

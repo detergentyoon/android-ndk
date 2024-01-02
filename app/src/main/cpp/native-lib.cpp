@@ -252,3 +252,115 @@ Java_com_example_ndk_1sample_jni_JNICallBackArray_intArrayAccess(
 
     return ret;
 }
+
+
+
+/**
+ * (1) Integer 클래스의 인스턴스를 생성하고,
+ * (2) Integer 클래스 내의 toString() 메소드를 사용하여
+ * String 객체를 통해 메소드 내부에서 사용하는 함수
+ *
+ *  - String 문자열은 ReleaseStringUTFChar() 함수를 통해 문자열 메모리를 삭제시키고,
+ *  - Integer 클래스의 인스턴스는 Java 힙 메모리에 생성되어 pass-by-reference 형태로 Java에 반환된다.
+ *  - newojb 변수는 지역 변수이므로 함수가 반환될 때 자동으로 삭제된다.
+ *  - 최종적으로 MainActivity 클래스에서 사용이 완료되면 Integer 객체는 가비지 콜렉션에 의해 자동으로 삭제된다.
+ *
+ * @return 메소드 내부에서 생성한 객체
+ */
+jobject getInteger(JNIEnv *env, jobject obj, jint number) {
+    // java.lang.Integer 클래스 반환
+    jclass cls = env->FindClass("java/lang/Integer");
+
+    // Integer 클래스 생성자 ID 반환
+    //      생성자의 아이디를 찾을 때에는 함수 이름을 <init>으로 사용
+    //      생성자는 선언 시 반환하는 데이터 타입이 없으므로 V 식별자 (void) 사용
+    jmethodID midInit = env->GetMethodID(cls, "<init>", "(I)V");
+    if (NULL == midInit) return NULL;
+
+    // 생성자와 초기화 데이터(네이티브 함수 호출 시 전달받는 인수)를 통해 클래스의 인스턴스 생성
+    jobject newObj = env->NewObject(cls, midInit, number);
+
+    // Integer 클래스 내의 toString() 메소드 ID 획득
+    jmethodID stringID = env->GetMethodID(cls, "toString", "()Ljava/lang/String;");
+    if (NULL == stringID) return NULL;
+
+    // toString() 메소드 실행
+    jstring result = (jstring) env->CallObjectMethod(newObj, stringID);
+    const char *res = env->GetStringUTFChars(result, NULL);
+
+    // Integer 클래스의 toString() 메소드 호출 결과를 Logcat에 출력
+    __android_log_print(ANDROID_LOG_INFO, "JNICallBackArray",
+                        "In C: the number is %s\n", res);
+    env->ReleaseStringUTFChars(result, res); // 메모리 해제
+
+    return newObj;
+}
+
+extern "C" JNIEXPORT jobject JNICALL
+Java_com_example_ndk_1sample_jni_JNICallBackArray_getInteger(
+        JNIEnv *env, jobject obj, jint number) {
+    return getInteger(env, obj, number);
+}
+
+// Java의 객체를 가리키는 reference는 C/C++ 언어에서 사용하는 포인터와 기능적으로 다르다.
+// JNI로 제공되는 참조 변수는 모두 지역 변수로 제공되며, 이는 스택에 저장되는 변수이기 때문에
+// 함수가 반환되면 지역 변수는 자동으로 스택에서 삭제되는 특징을 갖는다.
+//
+// 위 함수에서는 객체를 대상으로 다루었으나, 객체(jobject) 타입을 포함한
+// 클래스(jclass) 타입이나 배열(jarray) 또한 동일하게 적용된다.
+//
+// 하지만 jstring 타입의 경우 String 클래스로부터 생성되지만 객체가 아닌 문자열로 취급된다.
+// 따라서 GetStringUTFChars() 함수나 GetByteArrayElement() 함수에 의해 반환되는 포인터는
+// 클래스의 인스턴스나 객체가 아닌 단순 문자열로서 제공된다.
+// 때문에 함수가 반환될 때 free() 함수를 호출하듯
+// ReleaseStringUTFChars() 함수를 호출해 메모리를 해제해야 한다.
+
+
+static jclass    classInteger;
+static jobject   newObj;
+static jmethodID integerInit;
+
+/**
+ * 스택에 저장된 참조 변수의 데이터가 함수의 반환과 동시에 삭제되지 않도록 하기 위해서
+ * 지역 참조 변수를 전역 참조 변수로 변환(혹은 static 참조 변수)하여 사용한다.
+ *
+ * 이 함수에서는 생성한 객체를 네이티브 코드의 내부 함수에서 공동으로 사용하게끔 하기 위해
+ * NewGlobalRef() 함수를 통해 지역 참조 변수를 전역 참조 변수로 변환하여 변수에 할당한다.
+ */
+jobject getIntegerRef(JNIEnv *env, jobject obj, jint number) {
+    // 클래스를 지역 참조 변수로 변환
+    jclass classIntegerLocal = env->FindClass("java/lang/Integer");
+
+    // 지역 참조 변수를 전역 참조 변수로 변환
+    classInteger = reinterpret_cast<jclass>(env->NewGlobalRef(classIntegerLocal));
+    if (NULL == classInteger) return NULL;
+
+    // 지역 참조 변수에 의해 사용된 메모리를 삭제 (아래 함수는 호출하지 않아도 무방함)
+    env->DeleteLocalRef(classIntegerLocal);
+
+    // 메소드 ID는 객체가 아니므로 NewGlobalRef() 함수 사용 X
+    integerInit = env->GetMethodID(classInteger, "<init>", "(I)V");
+    if (NULL == integerInit) return NULL;
+    
+    // Integer 클래스의 생성자를 사용해 인스턴스 생성 후 전역 변수로 변환
+    newObj = env->NewGlobalRef(env->NewObject(classInteger, integerInit, number));
+    
+    // Integer 클래스 내에 존재하는 toString() 메소드의 ID 획득
+    jmethodID stringID = env->GetMethodID(classInteger, "toString", "()Ljava/lang/String;");
+    if (NULL == stringID) return NULL;
+    
+    // toString() 메소드 실행
+    jstring result = (jstring)env->CallObjectMethod(newObj, stringID);
+    const char *res = env->GetStringUTFChars(result, NULL);
+    __android_log_print(ANDROID_LOG_INFO, "JNICallBackArray",
+                        "In C: the number is %s\n", res);
+    env->ReleaseStringUTFChars(result, res); // 사용한 메모리 해제
+
+    return newObj;
+}
+
+extern "C" JNIEXPORT jobject JNICALL
+Java_com_example_ndk_1sample_jni_JNICallBackArray_getIntegerRef(
+        JNIEnv *env, jobject obj, jint number) {
+    return getIntegerRef(env, obj, number);
+}

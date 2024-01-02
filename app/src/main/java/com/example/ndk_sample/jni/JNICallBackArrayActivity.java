@@ -1,6 +1,7 @@
 package com.example.ndk_sample.jni;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,9 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.ndk_sample.databinding.ActivityJniCallbackArrayBinding;
 
 public class JNICallBackArrayActivity extends AppCompatActivity {
-    public int i = 0, j = 0;
-
-    private static final String TAG = "JNICallBackArrayActivity";
+    private static final String TAG = "JNICallBackArray";
 
     ActivityJniCallbackArrayBinding binding;
 
@@ -42,5 +41,8 @@ public class JNICallBackArrayActivity extends AppCompatActivity {
     private final View.OnClickListener saveListener = view -> {
         JNICallBackArray arr = new JNICallBackArray();
         arr.doArray(result0, result1, result2, result3);
+
+        int i = 100;
+        Log.i(TAG, "Native code constructed java.lang.Integer " + arr.getIntegerRef(i));
     };
 }

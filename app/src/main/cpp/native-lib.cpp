@@ -364,3 +364,42 @@ Java_com_example_ndk_1sample_jni_JNICallBackArray_getIntegerRef(
         JNIEnv *env, jobject obj, jint number) {
     return getIntegerRef(env, obj, number);
 }
+
+
+
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_ndk_1sample_jni_ExceptionHandling_nativeThrow(
+        JNIEnv *env, jobject obj) {
+    jclass newException = env->FindClass("java/lang/IllegalArgumentException");
+
+    if (newException == nullptr) {
+        __android_log_print(ANDROID_LOG_INFO, "ExceptionHandling",
+                            "Error finding the new exception class\n");
+        return;
+    }
+
+    env->ThrowNew(newException, "IllegalArgumentException thrown from C++ code");
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_ndk_1sample_jni_ExceptionHandling_nativeJavaThrow(
+        JNIEnv *env, jobject obj) {
+    jthrowable exc;
+    jclass cls = env->GetObjectClass(obj);
+
+    jmethodID mid = env->GetMethodID(cls, "javaCatchThrow", "()V");
+
+    if (mid == nullptr) {
+        __android_log_print(ANDROID_LOG_INFO, "ExceptionHandling",
+                            "Error obtaining method id\n");
+        return;
+    }
+
+    // 발생한 예외 내용을 Logcat에 출력하고 예외 발생 사항에 대해서는 무시함
+    env->CallVoidMethod(obj, mid);
+    if (env->ExceptionCheck()) {
+        env->ExceptionDescribe();
+        env->ExceptionClear();
+    }
+ }

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ndk_sample.databinding.ActivityMainBinding;
+import com.example.ndk_sample.jni.ExceptionHandlingActivity;
 import com.example.ndk_sample.jni.GetLineActivity;
 import com.example.ndk_sample.jni.JNICallBackArrayActivity;
 import com.example.ndk_sample.jni.JNICallBackFieldActivity;
@@ -21,7 +22,13 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
-    private final String[] items = {"GetLine", "JNICallBackMethod", "JNICallBackField", "JNICallBackArray"};
+    private final String[] items = {
+            "GetLine",
+            "JNICallBackMethod",
+            "JNICallBackField",
+            "JNICallBackArray",
+            "ExceptionHandling"
+    };
 
     private ActivityMainBinding binding;
 
@@ -53,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 destinationActivity = JNICallBackFieldActivity.class;
             } else if (items[3].equals(selectedItem)) {
                 destinationActivity = JNICallBackArrayActivity.class;
+            } else if (items[4].equals(selectedItem)) {
+                destinationActivity = ExceptionHandlingActivity.class;
             } else {
                 return;
             }

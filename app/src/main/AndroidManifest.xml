@@ -39,6 +39,10 @@
             android:name=".jni.JNICallBackArrayActivity">
         </activity>
 
+        <activity
+            android:name=".jni.ExceptionHandlingActivity">
+        </activity>
+
     </application>
 
 </manifest>

@@ -18,4 +18,5 @@
     <string name="result_2">result 2</string>
     <string name="result_3">result 3</string>
     <string name="call_exception">Call\nException</string>
+    <string name="start_task">Start Task</string>
 </resources>

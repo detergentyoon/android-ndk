@@ -21,6 +21,7 @@ add_library(
         #       아래의 소스 파일은 CMakeLists.txt 파일이 존재하는 위치를 기준으로 상대적인 위치로 표시됩니다.
         native-lib.cpp
         dlfcn.c
+        native-lib.c
 )
 
 # 지정된 미리 빌드된 라이브러리를 검색하고 경로를 변수로 저장합니다.

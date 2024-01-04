@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.ndk_sample.android_process.MemoryOptimizationActivity;
 import com.example.ndk_sample.databinding.ActivityMainBinding;
 import com.example.ndk_sample.android_process.DynamicLinkerActivity;
 import com.example.ndk_sample.jni.ExceptionHandlingActivity;
@@ -31,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
             "JNICallBackArray",
             "ExceptionHandling",
             "DynamicLinker",
-            "GetPID"
+            "GetPID",
+            "MemoryOptimization"
     };
 
     private ActivityMainBinding binding;
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
                 destinationActivity = DynamicLinkerActivity.class;
             } else if (items[6].equals(selectedItem)) {
                 destinationActivity = GetPidActivity.class;
+            } else if (items[7].equals(selectedItem)) {
+                destinationActivity = MemoryOptimizationActivity.class;
             } else {
                 return;
             }

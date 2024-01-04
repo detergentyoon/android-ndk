@@ -51,6 +51,10 @@
             android:name=".android_process.GetPidActivity">
         </activity>
 
+        <activity
+            android:name=".android_process.MemoryOptimizationActivity">
+        </activity>
+
     </application>
 
 </manifest>

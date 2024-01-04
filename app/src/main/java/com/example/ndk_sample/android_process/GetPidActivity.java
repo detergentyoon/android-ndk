@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ndk_sample.databinding.ActivityGetLineBinding;
 
-public class GetUidActivity extends AppCompatActivity {
+public class GetPidActivity extends AppCompatActivity {
     ActivityGetLineBinding binding;
 
     @Override
@@ -21,8 +21,8 @@ public class GetUidActivity extends AppCompatActivity {
         setContentView(view);
 
         TextView tv = binding.sampleText;
-        tv.setText(getUid());
+        tv.setText(getPID());
     }
 
-    public native String getUid();
+    public native String getPID();
 }

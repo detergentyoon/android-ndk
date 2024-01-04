@@ -12,7 +12,7 @@ import com.example.ndk_sample.databinding.ActivityMainBinding;
 import com.example.ndk_sample.android_process.DynamicLinkerActivity;
 import com.example.ndk_sample.jni.ExceptionHandlingActivity;
 import com.example.ndk_sample.jni.GetLineActivity;
-import com.example.ndk_sample.android_process.GetUidActivity;
+import com.example.ndk_sample.android_process.GetPidActivity;
 import com.example.ndk_sample.jni.JNICallBackArrayActivity;
 import com.example.ndk_sample.jni.JNICallBackFieldActivity;
 import com.example.ndk_sample.jni.JNICallBackMethodActivity;
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
             "JNICallBackArray",
             "ExceptionHandling",
             "DynamicLinker",
-            "GetUid"
+            "GetPID"
     };
 
     private ActivityMainBinding binding;
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (items[5].equals(selectedItem)) {
                 destinationActivity = DynamicLinkerActivity.class;
             } else if (items[6].equals(selectedItem)) {
-                destinationActivity = GetUidActivity.class;
+                destinationActivity = GetPidActivity.class;
             } else {
                 return;
             }

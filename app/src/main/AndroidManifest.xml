@@ -48,7 +48,7 @@
         </activity>
 
         <activity
-            android:name=".android_process.GetUidActivity">
+            android:name=".android_process.GetPidActivity">
         </activity>
 
     </application>

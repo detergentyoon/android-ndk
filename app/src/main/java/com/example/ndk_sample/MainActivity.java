@@ -12,6 +12,7 @@ import com.example.ndk_sample.databinding.ActivityMainBinding;
 import com.example.ndk_sample.jni.DynamicLinkerActivity;
 import com.example.ndk_sample.jni.ExceptionHandlingActivity;
 import com.example.ndk_sample.jni.GetLineActivity;
+import com.example.ndk_sample.jni.GetUidActivity;
 import com.example.ndk_sample.jni.JNICallBackArrayActivity;
 import com.example.ndk_sample.jni.JNICallBackFieldActivity;
 import com.example.ndk_sample.jni.JNICallBackMethodActivity;
@@ -29,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
             "JNICallBackField",
             "JNICallBackArray",
             "ExceptionHandling",
-            "DynamicLinker"
+            "DynamicLinker",
+            "GetUid"
     };
 
     private ActivityMainBinding binding;
@@ -66,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
                 destinationActivity = ExceptionHandlingActivity.class;
             } else if (items[5].equals(selectedItem)) {
                 destinationActivity = DynamicLinkerActivity.class;
+            } else if (items[6].equals(selectedItem)) {
+                destinationActivity = GetUidActivity.class;
             } else {
                 return;
             }

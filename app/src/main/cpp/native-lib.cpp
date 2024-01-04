@@ -1,5 +1,8 @@
 #include <jni.h>
 #include <string>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
 #include <android/log.h>
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -403,3 +406,20 @@ Java_com_example_ndk_1sample_jni_ExceptionHandling_nativeJavaThrow(
         env->ExceptionClear();
     }
  }
+
+
+
+ extern "C" JNIEXPORT jstring JNICALL
+ Java_com_example_ndk_1sample_jni_GetUidActivity_getUid(
+         JNIEnv *env, jobject thiz) {
+
+    // 문자열 저장 공간
+    char dump[300];
+
+    // 사용자 ID와 그룹 ID를 사용하여 문자열 생성
+    sprintf(dump, "Process uid=%d, gid=%d, effective uid=%d, effective gid=%d \n",
+            (int) getuid(), (int) getgid(), (int) geteuid(), (int) getegid());
+
+    // 생성한 문자열 반환
+    return env->NewStringUTF(dump);
+}

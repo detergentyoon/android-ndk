@@ -16,7 +16,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         externalNativeBuild {
-            cmake { /* cpp 컴파일 시 사용하는 옵션 */
+            cmake { /* c/c++ 컴파일 시 사용하는 옵션 */
                 cppFlags ""
             }
         }

@@ -47,6 +47,10 @@
             android:name=".jni.DynamicLinkerActivity">
         </activity>
 
+        <activity
+            android:name=".jni.GetUidActivity">
+        </activity>
+
     </application>
 
 </manifest>

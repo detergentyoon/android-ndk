@@ -9,10 +9,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ndk_sample.databinding.ActivityMainBinding;
-import com.example.ndk_sample.jni.DynamicLinkerActivity;
+import com.example.ndk_sample.android_process.DynamicLinkerActivity;
 import com.example.ndk_sample.jni.ExceptionHandlingActivity;
 import com.example.ndk_sample.jni.GetLineActivity;
-import com.example.ndk_sample.jni.GetUidActivity;
+import com.example.ndk_sample.android_process.GetUidActivity;
 import com.example.ndk_sample.jni.JNICallBackArrayActivity;
 import com.example.ndk_sample.jni.JNICallBackFieldActivity;
 import com.example.ndk_sample.jni.JNICallBackMethodActivity;

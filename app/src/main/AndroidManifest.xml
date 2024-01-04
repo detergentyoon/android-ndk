@@ -44,11 +44,11 @@
         </activity>
 
         <activity
-            android:name=".jni.DynamicLinkerActivity">
+            android:name=".android_process.DynamicLinkerActivity">
         </activity>
 
         <activity
-            android:name=".jni.GetUidActivity">
+            android:name=".android_process.GetUidActivity">
         </activity>
 
     </application>

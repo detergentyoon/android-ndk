@@ -1,4 +1,4 @@
-package com.example.ndk_sample.jni;
+package com.example.ndk_sample.android_process;
 
 import android.os.Bundle;
 import android.view.View;

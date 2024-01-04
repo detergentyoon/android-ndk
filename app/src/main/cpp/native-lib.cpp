@@ -410,7 +410,7 @@ Java_com_example_ndk_1sample_jni_ExceptionHandling_nativeJavaThrow(
 
 
  extern "C" JNIEXPORT jstring JNICALL
- Java_com_example_ndk_1sample_jni_GetUidActivity_getUid(
+ Java_com_example_ndk_1sample_android_1process_GetUidActivity_getUid(
          JNIEnv *env, jobject thiz) {
 
     // 문자열 저장 공간

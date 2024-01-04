@@ -15,7 +15,7 @@
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
 JNIEXPORT jstring JNICALL
-Java_com_example_ndk_1sample_jni_DynamicLinkerActivity_stringFromJNI(
+Java_com_example_ndk_1sample_android_1process_DynamicLinkerActivity_stringFromJNI(
         JNIEnv *env, jobject obj) {
     char buffer[256] = {0}; // 버퍼 초기화
     double (*cosine)(double); // 함수 변수

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ndk_sample.databinding.ActivityMainBinding;
+import com.example.ndk_sample.jni.DynamicLinkerActivity;
 import com.example.ndk_sample.jni.ExceptionHandlingActivity;
 import com.example.ndk_sample.jni.GetLineActivity;
 import com.example.ndk_sample.jni.JNICallBackArrayActivity;
@@ -27,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
             "JNICallBackMethod",
             "JNICallBackField",
             "JNICallBackArray",
-            "ExceptionHandling"
+            "ExceptionHandling",
+            "DynamicLinker"
     };
 
     private ActivityMainBinding binding;
@@ -62,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
                 destinationActivity = JNICallBackArrayActivity.class;
             } else if (items[4].equals(selectedItem)) {
                 destinationActivity = ExceptionHandlingActivity.class;
+            } else if (items[5].equals(selectedItem)) {
+                destinationActivity = DynamicLinkerActivity.class;
             } else {
                 return;
             }

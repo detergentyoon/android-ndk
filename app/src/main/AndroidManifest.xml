@@ -43,6 +43,10 @@
             android:name=".jni.ExceptionHandlingActivity">
         </activity>
 
+        <activity
+            android:name=".jni.DynamicLinkerActivity">
+        </activity>
+
     </application>
 
 </manifest>
